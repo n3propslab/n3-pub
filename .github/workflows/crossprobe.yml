@@ -1,0 +1,18 @@
+name: crossprobe
+on:
+  workflow_dispatch:
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "secret_source=${{ github.secret_source }}"
+          echo "ref_protected=${{ github.ref_protected }}"
+          echo "actor=${{ github.actor }} triggering=${{ github.triggering_actor }}"
+          echo "PRIV_STATUS=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/n3propslab/n3-priv)"
+          echo "PRIV_SECRETS=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/n3propslab/n3-priv/actions/secrets)"
+          echo "ORG_SECRETS=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/orgs/n3propslab/actions/secrets)"
+          echo "TOKEN_SCOPES=$(curl -s -I -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/user | grep -i x-oauth-scopes)"
