@@ -1,0 +1,12 @@
+name: token-ceiling
+on: workflow_dispatch
+permissions: write-all
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH: ${{ github.token }}
+        run: |
+          echo "CAN_READ=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH" https://api.github.com/repos/n3propslab/n3-pub)"
+          echo "CAN_WRITE=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "Authorization: Bearer $GH" -H 'Content-Type: application/json' -d '{"body":"ceiling-probe"}' https://api.github.com/repos/n3propslab/n3-pub/issues/1/comments)"
